@@ -11,7 +11,7 @@ int main() {
     soma += lista[i];
   }
 
-  float media = soma / tamanhoLista;
+  float media = (float) soma / tamanhoLista;
 
   for (int i = 0; i < tamanhoLista; i++) {
     int numero = lista[i];
