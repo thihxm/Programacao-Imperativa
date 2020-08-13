@@ -25,7 +25,7 @@ int main() {
     soma += numero;
   }
 
-  printf("Média: %d\n", media);
+  printf("Média: %f\n", media);
   printf("Acima da média: %d\n", qtdAcimaMedia);
   printf("Abaixo da média: %d\n", qtdAbaixoMedia);
 
