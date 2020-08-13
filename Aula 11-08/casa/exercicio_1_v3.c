@@ -9,25 +9,17 @@ int main() {
   int soma = 0, posicao = 0;
   lista[0] = lista[1] = lista[2] = 0;
 
-  while (1 == 1) {
-    if (posicao >= 3) break;
-
+  while (posicao < tamanhoLista) {
     printf("Insira um número: ");
     scanf("%d", &lista[posicao]);
-    if (posicao == 2) {
-      if (lista[0] < lista[1] && lista[1] < lista[2]) {
-        break;
-      } else {
-        posicao = 0;
-        lista[0] = lista[1] = lista[2] = 0;
-        continue;
-      }
+    if (posicao - 1 > 0 && lista[posicao] < lista[posicao - 1]) {
+      soma = lista[0] = lista[posicao];
+      posicao = 1;
+      lista[1] = lista[2] = 0;
+    } else {
+      soma += lista[posicao];
+      posicao++;
     }
-    posicao++;
-  }
-
-  for (int i = 0; i < tamanhoLista; i++) {
-    soma += lista[i];
   }
 
   float media = (float) soma / tamanhoLista;
