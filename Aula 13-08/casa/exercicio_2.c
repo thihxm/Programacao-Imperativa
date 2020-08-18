@@ -18,7 +18,7 @@ int main() {
     
     for (int aux = 0; aux < i; aux++) {
       if (aux + 1 < i) {
-        printf("%d+", ultimoImpar);
+        printf("%d + ", ultimoImpar);
       } else {
         printf("%d", ultimoImpar);  
       }
