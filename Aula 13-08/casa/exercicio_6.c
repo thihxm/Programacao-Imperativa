@@ -16,7 +16,7 @@ int main() {
     scanf("%d", &valor);
     if (valor >= 1 && valor <= 5) {
       valoresUsuario[aux] = valor;
-      listaDistribuicao[valor - 1] += 1;
+      listaDistribuicao[valor - 1]++;
       aux++;
     }
   }
@@ -24,7 +24,7 @@ int main() {
   for (int i = 0; i < tamanhoListaDistribuicao; i++) {
     printf("%d (x%d)-> ", i + 1, listaDistribuicao[i]);
     for (int j = 0; j < listaDistribuicao[i]; j++) {
-      printf("🟩 ");
+      printf("🟩");
     }
     printf("\n");
   }
