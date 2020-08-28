@@ -10,10 +10,13 @@
 #define TAM 10
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main() {
   int posMenorValor = 0;
   int valoresUsuario[TAM];
+
+  srand(time(NULL));
 
   for (int i = 0; i < TAM; i++) {
     // printf("Insira o %d número: ", i + 1);
