@@ -9,30 +9,28 @@
 
 int main() {
   int matriz[TAM][TAM];
-  int igual = 0;
-  int aux = 0;
-
+  int igual, *i, *j;
+  int a, b;
+  
   srand(time(NULL));
 
-  for (int *i = &matriz[0][0]; i < &matriz[TAM][TAM]; i++) {
-    aux = 1 + rand() % 100;
-    for (int *j = &matriz[0][0]; j < i; j++) {
-      if (*j == aux) {
+  for (i = matriz; i <= &matriz[TAM - 1][TAM - 1]; i++) {
+    *i = 1 + rand() % 16;
+    igual = 0;
+    for (j = matriz; j < i; j++) {
+      if (*j == *i) {
         igual = 1;
       }
     }
-    if (!igual) {
-      *i = aux;
-    } else {
+    if (igual) {
       i--;
     }
-    igual = 0;
   }
 
-  for (int i = 0; i < TAM; i++) {
+  for (a = 0; a < TAM; a++) {
     printf("[ ");
-    for (int j = 0; j < TAM; j++) {
-      printf("%d ", matriz[i][j]);
+    for (b = 0; b < TAM; b++) {
+      printf("%3d ", matriz[a][b]);
     }
     printf("]\n");
   }
