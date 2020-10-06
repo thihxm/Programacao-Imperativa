@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void imprimirLinha(tamanho) {
+void imprimirLinha(int tamanho) {
   int i;
   for (i = 0; i < tamanho; i++) {
     printf("-");
