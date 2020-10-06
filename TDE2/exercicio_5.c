@@ -1,3 +1,5 @@
+// Thiago Henrique Xavier Medeiros
+
 // Desenvolva um programa para o “Jogo da Forca”. Para tal, crie um vetor de strings inicializado com um conjunto de
 // palavras-chave (por exemplo: nomes de capitais do Brasil, ou times de futebol da Serie A ou Países da América do Sul, etc).
 // Sorteie uma das palavras para ser o segredo e forneça seis vidas para o usuário acertar o segredo. A cada rodada informe o
@@ -34,7 +36,8 @@ int jaChutou(char letrasUsadas[], char letra, int chutes) {
 }
 
 int verificarGanhou(char *palavraSorteada, char letrasUsadas[], int chutes) {
-	for(int i = 0; i < strlen(palavraSorteada); i++) {
+  int i;
+	for(i = 0; i < strlen(palavraSorteada); i++) {
 		if(palavraSorteada[i] != 32 && !jaChutou(letrasUsadas, palavraSorteada[i], chutes)) {
 			return 0;
 		}
@@ -55,8 +58,7 @@ void imprimirLetrasUsadas(char letrasUsadas[], int chutes) {
 void imprimirPalavra(char *palavraSorteada, char letrasUsadas[], int chutes) {
   int i;
   for(i = 0; i < strlen(palavraSorteada); i++) {
-    int ja = jaChutou(letrasUsadas, palavraSorteada[i], chutes);
-    if(ja || palavraSorteada[i] == 32) {
+    if(jaChutou(letrasUsadas, palavraSorteada[i], chutes) || palavraSorteada[i] == 32) {
       printf("%c ", palavraSorteada[i]);
     } else {
       printf("_ ");

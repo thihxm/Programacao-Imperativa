@@ -1,3 +1,5 @@
+// Thiago Henrique Xavier Medeiros
+
 // Escreva um programa que leia um número inteiro, caso ele esteja dentro do intervalo de 1 a 999, mostre seu valor por
 // extenso, caso contrário mostre “valor fornecido fora dos limites operacionais”. Ou seja, se o usuário digitar 158, o programa
 // mostra “158: cento e cinquenta e oito”
