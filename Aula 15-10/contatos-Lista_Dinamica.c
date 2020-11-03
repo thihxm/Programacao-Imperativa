@@ -26,6 +26,9 @@ void imprimeContato(tContato *contato);
 void imprimeListaContatos(tLista *lista);
 tContato* getContato(tLista *lista, int pos);
 tContato leContato();
+void buscaContato(tContato *lista, char busca[]);
+void ordenarContatos(tContato *lista);
+int removeContato(tLista *lista, int pos);
 
 int main()
 {
@@ -47,14 +50,13 @@ int main()
   do
   {
     printf("\n--- Menu---\n\n");
-    printf ("\n--- Menu---\n\n");
     printf ("0 - sair\n");
     printf ("1 - cadastrar um contato\n");
     printf ("2 - consultar contato pelo indice\n");
-    printf ("3 - consultar contato pelo nome\n");
-    printf ("4 - remover contato pelo indice\n");
+    printf ("3 - consultar contato pelo nome\n");  // Validador
+    printf ("4 - remover contato pelo indice\n"); // TDE 2  comando FREE
     printf ("5 - imprimir lista de contatos\n");
-    printf ("6 - ordenar em ordem alfabetica A-Z\n");
+    printf ("6 - ordenar em ordem alfabetica A-Z\n"); // Validador
     printf ("7 - exportar para arquivo CSV\n");
     printf ("8 - importar de arquivo CSV\n");
     printf("\nQual sua opcao: ");
@@ -83,10 +85,17 @@ int main()
         imprimeContato(pContato);
       }
       break;
-      break;
     case 3:   // consultar contato pelo nome
       break;
     case 4:   // remover contato pelo indice
+      printf("\n--- Remover contato pelo indice ---\n");
+      printf("\nQual a posicao: ");
+      scanf("%d", &pos);
+      if (removeContato(lista, pos) != 0) {
+        printf("Ocorreu um problema, %s nao pode ser removido!\n", contato.nome);
+      } else {
+        printf("Contato na posicao %d removido da lista!\n", pos);
+      }
       break;
     case 5:  // imprimir lista de contatos
       imprimeListaContatos(lista);
@@ -249,4 +258,87 @@ tContato leContato()
   fgets(c.telefone, 20, stdin);
   c.telefone[strcspn(c.telefone, "\n")] = 0;
   return c;
+}
+
+/* void buscaContato(tContato *lista, char busca[])
+{
+  int i, j;
+  char nomeLower[200], buscaLower[200];
+  strcpy(buscaLower, busca);
+  strlwr(buscaLower);
+  for (i = 0; i < TAM; i++)
+  {
+    tContato contato = lista[i];
+    strcpy(nomeLower, contato.nome);
+    strlwr(nomeLower);
+    char *ptr = strstr(nomeLower, buscaLower);
+    if (ptr != NULL)
+    {
+      imprimeContato(contato);
+    }
+  }
+}
+
+void ordenarContatos(tContato *lista) {
+  int i, j, menor;
+  tContato aux;
+  for (j = 0; j < TAM - 1; j++)
+  {
+    menor = j;
+    for (i = j + 1; i < TAM; i++)
+    {
+      if (strcmp(lista[i].nome, lista[menor].nome) < 0)
+        menor = i;
+    }
+    aux = lista[j];
+    lista[j] = lista[menor];
+    lista[menor] = aux;
+  }
+} */
+
+
+int removeContato(tLista *lista, int pos)
+{
+  tContato *contato;
+  tContato *contatoAnterior;
+  if (lista == NULL) {
+    printf("Lista inexistente!\n");
+    return 1;
+  }
+  if (lista->qtde == 0) {
+    printf("Lista esta vazia!\n");
+    return 1;
+  }
+  if (pos < 0 || pos >= lista->qtde) {
+    printf("Posicao solicitada inexistente!\n");
+    return 1;
+  }
+  if (pos > 0) {
+    int i = 0;
+    contato = lista->ini;
+    while (i < pos) {
+      if (i == pos - 1) {
+        contatoAnterior = contato;
+      }
+      contato = contato->prox;
+      i++;
+    }
+    imprimeContato(contatoAnterior);
+    i = 0;
+    
+    contatoAnterior = lista->ini;
+    while (i < pos - 1) {
+      contatoAnterior = contatoAnterior->prox;
+      i++;
+    }
+    imprimeContato(contatoAnterior);
+    contatoAnterior->prox = contato->prox;
+  } else {
+    contato = lista->ini;
+    lista->ini = contato->prox;
+  }
+  lista->qtde--;
+  free(contato);
+
+  return 0;
 }
