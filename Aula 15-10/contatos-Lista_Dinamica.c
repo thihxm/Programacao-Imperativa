@@ -26,8 +26,8 @@ void imprimeContato(tContato *contato);
 void imprimeListaContatos(tLista *lista);
 tContato* getContato(tLista *lista, int pos);
 tContato leContato();
-void buscaContato(tContato *lista, char busca[]);
-void ordenarContatos(tContato *lista);
+void buscaContato(tLista *lista, char busca[]);
+void ordenarContatos(tLista *lista);
 int removeContato(tLista *lista, int pos);
 
 int main()
@@ -39,6 +39,7 @@ int main()
   int opcao;
   char nomeArquivo[30];
   FILE *arquivoExportar, *arquivoImportar;
+  char nomePesquisa[200];
 
   lista = criaLista(); // alocar dinamicamente uma lista vazia
   if (lista == NULL)
@@ -86,6 +87,11 @@ int main()
       }
       break;
     case 3:   // consultar contato pelo nome
+      printf("\n--- Consulta contato pelo nome ---\n");
+      printf("Insira o nome do contato: ");
+      scanf("%s", &nomePesquisa);
+
+      buscaContato(lista, nomePesquisa);
       break;
     case 4:   // remover contato pelo indice
       printf("\n--- Remover contato pelo indice ---\n");
@@ -101,6 +107,8 @@ int main()
       imprimeListaContatos(lista);
       break;
     case 6:  // ordenar em ordem alfabetica A-Z
+      ordenarContatos(lista);
+      imprimeListaContatos(lista);
       break;
     case 7:  // exportar para arquivo CSV
       printf("\n--- Exportar para arquivo CSV ---\n");
@@ -260,41 +268,77 @@ tContato leContato()
   return c;
 }
 
-/* void buscaContato(tContato *lista, char busca[])
+void buscaContato(tLista *lista, char busca[])
 {
+  if (lista == NULL) {
+    printf("Lista inexistente!\n");
+    return;
+  }
+  if (lista->ini == NULL)
+  {
+    printf("Nao e possivel buscar em uma lista vazia!\n");
+    return;
+  }
+  tContato *contato;
   int i, j;
   char nomeLower[200], buscaLower[200];
   strcpy(buscaLower, busca);
   strlwr(buscaLower);
-  for (i = 0; i < TAM; i++)
+  contato = lista->ini;
+  for (i = 0; i < lista->qtde; i++)
   {
-    tContato contato = lista[i];
-    strcpy(nomeLower, contato.nome);
+    strcpy(nomeLower, contato->nome);
     strlwr(nomeLower);
     char *ptr = strstr(nomeLower, buscaLower);
     if (ptr != NULL)
     {
       imprimeContato(contato);
     }
+    contato = contato->prox;
   }
 }
 
-void ordenarContatos(tContato *lista) {
-  int i, j, menor;
-  tContato aux;
-  for (j = 0; j < TAM - 1; j++)
-  {
-    menor = j;
-    for (i = j + 1; i < TAM; i++)
-    {
-      if (strcmp(lista[i].nome, lista[menor].nome) < 0)
-        menor = i;
-    }
-    aux = lista[j];
-    lista[j] = lista[menor];
-    lista[menor] = aux;
+void ordenarContatos(tLista *lista) {
+  if (lista == NULL) {
+    printf("Lista inexistente!\n");
+    return;
   }
-} */
+  if (lista->ini == NULL)
+  {
+    printf("Nao e possivel ordenar uma lista vazia!\n");
+    return;
+  }
+  if (lista->qtde == 1)
+  {
+    printf("Nao e possivel ordenar uma lista de um elemento!\n");
+    return;
+  }
+  tContato *contatoI, *contatoJ, *contatoMenor, contatoAux;
+  int i, j;
+  contatoJ = lista->ini;
+  for (j = 0; j < lista->qtde; j++)
+  {
+    contatoMenor = contatoJ;
+    contatoI = contatoJ->prox;
+    for (i = j + 1; i < lista->qtde; i++)
+    {
+      if (strcmp(contatoI->nome, contatoMenor->nome) < 0) {
+        contatoMenor = contatoI;
+      }
+      contatoI = contatoI->prox;
+    }
+    // contatoAux = contatoJ;
+    strcpy(contatoAux.nome, contatoJ->nome);
+    strcpy(contatoAux.telefone, contatoJ->telefone);
+    // contatoJ = contatoMenor;
+    strcpy(contatoJ->nome, contatoMenor->nome);
+    strcpy(contatoJ->telefone, contatoMenor->telefone);
+    // contatoMenor = contatoAux;
+    strcpy(contatoMenor->nome, contatoAux.nome);
+    strcpy(contatoMenor->telefone, contatoAux.telefone);
+    contatoJ = contatoJ->prox;
+  }
+}
 
 
 int removeContato(tLista *lista, int pos)
