@@ -32,8 +32,9 @@
 #define MES_LEN 64
 
 int getUltimoDiaFev(int);
-void imprimirCalendario(struct tm);
 int getPosValorComando(char *, int , char *[]);
+void imprimirCalendario(struct tm);
+void imprimirCalendarioArquivo(FILE *, struct tm);
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +44,8 @@ int main(int argc, char *argv[])
   struct tm dia1;
 
   int argMes = 0, argAno = 0;
+  char *argNomeArquivo;
+  FILE *arquivoExportar;
 
   time(&agora);
   tempo = localtime(&agora);
@@ -57,6 +60,9 @@ int main(int argc, char *argv[])
   if (argc >= 3)
   {
     int posMes = getPosValorComando("m", argc, argv);
+    int posAno = getPosValorComando("y", argc, argv);
+    int posNomeArquivo = getPosValorComando("f", argc, argv);
+
     if (posMes > 0)
     {
       argMes = atoi(argv[posMes]);
@@ -65,7 +71,6 @@ int main(int argc, char *argv[])
       else
         printf("O mes informado eh invalido!\n");
     }
-    int posAno = getPosValorComando("y", argc, argv);
     if (posAno > 0)
     {
       argAno = atoi(argv[posAno]);
@@ -74,18 +79,47 @@ int main(int argc, char *argv[])
       else
         printf("O ano informado eh muito baixo!\n");
     }
+    if (posNomeArquivo > 0)
+    {
+      argNomeArquivo = argv[posNomeArquivo];
+    }
   }
 
   if (argAno && !argMes) {
     int i = 0;
+    if (argNomeArquivo) {
+      arquivoExportar = fopen(argNomeArquivo, "w");
+      if (arquivoExportar == NULL) {
+        printf("Nao foi possivel criar o arquivo de saida <%s>", argNomeArquivo);
+      }
+    }
     for (i = 0; i < 12; i++) {
       dia1.tm_mon = i;
       mktime(&dia1);
-      imprimirCalendario(dia1);
+
+      if (argNomeArquivo && arquivoExportar != NULL) {
+        imprimirCalendarioArquivo(arquivoExportar, dia1);
+      } else {
+        imprimirCalendario(dia1);
+      }
+    }
+    if (argNomeArquivo && arquivoExportar != NULL) {
+      fclose(arquivoExportar);
     }
   } else {
     mktime(&dia1);
-    imprimirCalendario(dia1);
+
+    if (argNomeArquivo) {
+      arquivoExportar = fopen(argNomeArquivo, "w");
+      if (arquivoExportar == NULL) {
+        printf("Nao foi possivel criar o arquivo de saida <%s>", argNomeArquivo);
+      } else {
+        imprimirCalendarioArquivo(arquivoExportar, dia1);
+        fclose(arquivoExportar);
+      }
+    } else {
+      imprimirCalendario(dia1);
+    }
   }
 }
 
@@ -155,14 +189,16 @@ void imprimirCalendario(struct tm dia1)
     // Corrigir espaçamento entre dias.
     // Caso o dia tiver apenas um dígito imprimir 4 espaçoes,
     // caso contrário apenas 3.
-    if ((int)dia / 10 >= 1)
-    {
-      printf("   ");
-    }
-    else
-    {
-      printf("    ");
-    }
+    if (dia1.tm_mday != ultimoDiaMes) {
+      if ((int)dia / 10 >= 1)
+      {
+        printf("   ");
+      }
+      else if(dia1.tm_mday != ultimoDiaMes)
+      {
+        printf("    ");
+      }
+    }    
 
     // Quebrar linha a cada 7 dias
     if ((diaSemana + 1) % 7 == 0)
@@ -173,4 +209,68 @@ void imprimirCalendario(struct tm dia1)
     dia1.tm_mday = dia1.tm_mday + 1;
   }
   printf("\n\n");
+}
+
+void imprimirCalendarioArquivo(FILE *arquivoExportar, struct tm dia1)
+{
+  const int ultimoDiaMeses[] = {31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  int i = 0, j = 0;
+  char mesString[MES_LEN] = {0};
+  int mesAtual = dia1.tm_mon;
+  int anoAtual = dia1.tm_year + 1900;
+  int ultimoDiaMes;
+
+  // Buscar último dia do mês
+  if (mesAtual != 1)
+    ultimoDiaMes = ultimoDiaMeses[mesAtual];
+  else
+    ultimoDiaMes = getUltimoDiaFev(anoAtual);
+
+  // Pegar o nome do mês atual e deixar a primeira letra maiúscula
+  strftime(mesString, MES_LEN, "%B", &dia1);
+  mesString[0] = toupper(mesString[0]);
+
+  fprintf(arquivoExportar, "%s - %d\n", mesString, anoAtual);
+  fprintf(arquivoExportar, "D    S    T    Q    Q    S    S\n");
+
+  for (i = 0; i < ultimoDiaMes; i++)
+  {
+    mktime(&dia1);
+    int dia = dia1.tm_mday;
+    int diaSemana = dia1.tm_wday; // domingo eh 0
+    if (dia == 1)
+    {
+      j = 0;
+      while (j < diaSemana)
+      {
+        fprintf(arquivoExportar, "     ");
+        j++;
+      }
+    }
+    // Imprimir dia
+    fprintf(arquivoExportar, "%d", dia);
+
+    // Corrigir espaçamento entre dias.
+    // Caso o dia tiver apenas um dígito imprimir 4 espaçoes,
+    // caso contrário apenas 3.
+    if (dia1.tm_mday != ultimoDiaMes) {
+      if ((int)dia / 10 >= 1)
+      {
+        fprintf(arquivoExportar, "   ");
+      }
+      else
+      {
+        fprintf(arquivoExportar, "    ");
+      }
+    }
+
+    // Quebrar linha a cada 7 dias
+    if ((diaSemana + 1) % 7 == 0)
+    {
+      fprintf(arquivoExportar, "\n");
+    }
+
+    dia1.tm_mday = dia1.tm_mday + 1;
+  }
+  fprintf(arquivoExportar, "\n\n");
 }
