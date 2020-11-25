@@ -79,6 +79,11 @@ int main(int argc, char *argv[])
     if (posAno > 0)
     {
       argAno = atoi(argv[posAno]);
+      if (argAno < 1900)
+      {
+        printf("O ano precisa ser maior ou igual a 1900!\n");
+        exit(EXIT_FAILURE);
+      }
       dia1.tm_year = argAno - 1900;
     }
     if (posNomeArquivo > 0)
