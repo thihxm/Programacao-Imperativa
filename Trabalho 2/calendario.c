@@ -1,6 +1,5 @@
 // ALUNO: THIAGO HENRIQUE XAVIER MEDEIROS
-// LINK VIDEO YOUTUBE: 
-
+// LINK VIDEO YOUTUBE:
 
 // O programa para imprimir (e eventualmente gravar) o calendario conforme foi chamado em linha de comando (terminal):
 
@@ -35,7 +34,7 @@
 #define MES_LEN 64
 
 int getUltimoDiaFev(int);
-int getPosValorComando(char *, int , char *[]);
+int getPosValorComando(char *, int, char *[]);
 void imprimirCalendario(struct tm);
 void imprimirCalendarioArquivo(FILE *, struct tm);
 
@@ -46,7 +45,7 @@ int main(int argc, char *argv[])
   struct tm *tempo;
   struct tm dia1;
 
-  int argMes = 0, argAno = 0;
+  int argMes = 0, argAno = 0, passouNomeArquivo = 0;
   char *argNomeArquivo;
   FILE *arquivoExportar;
 
@@ -84,45 +83,64 @@ int main(int argc, char *argv[])
     }
     if (posNomeArquivo > 0)
     {
-      argNomeArquivo = argv[posNomeArquivo];
+      if (argv[posNomeArquivo] && argv[posNomeArquivo][0] != '\0') {
+        argNomeArquivo = argv[posNomeArquivo];
+        passouNomeArquivo = 1;
+      }
     }
   }
 
-  if (argAno && !argMes) {
+  if (argAno && !argMes)
+  {
     int i = 0;
-    if (argNomeArquivo) {
+    if (passouNomeArquivo)
+    {
       arquivoExportar = fopen(argNomeArquivo, "w");
-      if (arquivoExportar == NULL) {
+      if (arquivoExportar == NULL)
+      {
         printf("Nao foi possivel criar o arquivo de saida <%s>", argNomeArquivo);
         exit(EXIT_FAILURE);
       }
     }
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < 12; i++)
+    {
       dia1.tm_mon = i;
       mktime(&dia1);
 
-      if (argNomeArquivo && arquivoExportar != NULL) {
+      if (passouNomeArquivo && arquivoExportar != NULL)
+      {
         imprimirCalendarioArquivo(arquivoExportar, dia1);
-      } else {
+      }
+      else
+      {
         imprimirCalendario(dia1);
       }
     }
-    if (argNomeArquivo && arquivoExportar != NULL) {
+    if (passouNomeArquivo && arquivoExportar != NULL)
+    {
       fclose(arquivoExportar);
     }
-  } else {
+  }
+  else
+  {
     mktime(&dia1);
 
-    if (argNomeArquivo) {
+    if (passouNomeArquivo)
+    {
       arquivoExportar = fopen(argNomeArquivo, "w");
-      if (arquivoExportar == NULL) {
+      if (arquivoExportar == NULL)
+      {
         printf("Nao foi possivel criar o arquivo de saida <%s>", argNomeArquivo);
         exit(EXIT_FAILURE);
-      } else {
+      }
+      else
+      {
         imprimirCalendarioArquivo(arquivoExportar, dia1);
         fclose(arquivoExportar);
       }
-    } else {
+    }
+    else
+    {
       imprimirCalendario(dia1);
     }
   }
@@ -194,16 +212,17 @@ void imprimirCalendario(struct tm dia1)
     // Corrigir espaçamento entre dias.
     // Caso o dia tiver apenas um dígito imprimir 4 espaçoes,
     // caso contrário apenas 3.
-    if (dia1.tm_mday != ultimoDiaMes) {
+    if (dia1.tm_mday != ultimoDiaMes)
+    {
       if ((int)dia / 10 >= 1)
       {
         printf("   ");
       }
-      else if(dia1.tm_mday != ultimoDiaMes)
+      else if (dia1.tm_mday != ultimoDiaMes)
       {
         printf("    ");
       }
-    }    
+    }
 
     // Quebrar linha a cada 7 dias
     if ((diaSemana + 1) % 7 == 0)
@@ -258,7 +277,8 @@ void imprimirCalendarioArquivo(FILE *arquivoExportar, struct tm dia1)
     // Corrigir espaçamento entre dias.
     // Caso o dia tiver apenas um dígito imprimir 4 espaçoes,
     // caso contrário apenas 3.
-    if (dia1.tm_mday != ultimoDiaMes) {
+    if (dia1.tm_mday != ultimoDiaMes)
+    {
       if ((int)dia / 10 >= 1)
       {
         fprintf(arquivoExportar, "   ");
