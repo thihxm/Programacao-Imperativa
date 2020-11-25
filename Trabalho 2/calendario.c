@@ -1,3 +1,7 @@
+// ALUNO: THIAGO HENRIQUE XAVIER MEDEIROS
+// LINK VIDEO YOUTUBE: 
+
+
 // O programa para imprimir (e eventualmente gravar) o calendario conforme foi chamado em linha de comando (terminal):
 
 // Opções de chamada (exemplos), são três formas de chamar o programa:
@@ -28,7 +32,6 @@
 #include <time.h>
 #include <locale.h>
 
-#define QTD_MESES 12
 #define MES_LEN 64
 
 int getUltimoDiaFev(int);
@@ -69,15 +72,15 @@ int main(int argc, char *argv[])
       if (argMes >= 1 && argMes <= 12)
         dia1.tm_mon = argMes - 1;
       else
+      {
         printf("O mes informado eh invalido!\n");
+        exit(EXIT_FAILURE);
+      }
     }
     if (posAno > 0)
     {
       argAno = atoi(argv[posAno]);
-      if (argAno >= 1900)
-        dia1.tm_year = argAno - 1900;
-      else
-        printf("O ano informado eh muito baixo!\n");
+      dia1.tm_year = argAno - 1900;
     }
     if (posNomeArquivo > 0)
     {
@@ -91,6 +94,7 @@ int main(int argc, char *argv[])
       arquivoExportar = fopen(argNomeArquivo, "w");
       if (arquivoExportar == NULL) {
         printf("Nao foi possivel criar o arquivo de saida <%s>", argNomeArquivo);
+        exit(EXIT_FAILURE);
       }
     }
     for (i = 0; i < 12; i++) {
@@ -113,6 +117,7 @@ int main(int argc, char *argv[])
       arquivoExportar = fopen(argNomeArquivo, "w");
       if (arquivoExportar == NULL) {
         printf("Nao foi possivel criar o arquivo de saida <%s>", argNomeArquivo);
+        exit(EXIT_FAILURE);
       } else {
         imprimirCalendarioArquivo(arquivoExportar, dia1);
         fclose(arquivoExportar);
